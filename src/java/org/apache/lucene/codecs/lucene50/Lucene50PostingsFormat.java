@@ -46,7 +46,10 @@ import org.apache.lucene.util.packed.PackedInts;
  * Basic idea:
  * <ul>
  *   <li>
- *   <b>Packed Blocks and VInt Blocks</b>: 
+ *   <b>Packed Blocks and VInt Blocks</b>:
+ *   Packed Blocks和VInt Blocks的概念。
+ *   Packed Blocks的块大小固定（当前是128），也就是说能存128个整数。
+ *   VInt Blocks的块大小是可变的
  *   <p>In packed blocks, integers are encoded with the same bit width ({@link PackedInts packed format}):
  *      the block size (i.e. number of integers inside block) is fixed (currently 128). Additionally blocks
  *      that are all the same value are encoded in an optimized way.</p>
@@ -55,9 +58,12 @@ import org.apache.lucene.util.packed.PackedInts;
  *   </li>
  *
  *   <li> 
- *   <b>Block structure</b>: 
+ *   <b>Block structure</b>:
+ *   块的结构
+ *   当postings（postings是什么意思？50又是什么意思）足够的长，Lucene50PostingsFormat会用更多的整型数据作为Packed Blocks
  *   <p>When the postings are long enough, Lucene50PostingsFormat will try to encode most integer data 
- *      as a packed block.</p> 
+ *      as a packed block.</p>
+ *      举个例子，有个term -> 259个文档。其中256个文档id被存储在2个Packed Blocks中，还有3个在VInt Blocks中。
  *   <p>Take a term with 259 documents as an example, the first 256 document ids are encoded as two packed 
  *      blocks, while the remaining 3 are encoded as one VInt block. </p>
  *   <p>Different kinds of data are always encoded separately into different packed blocks, but may 
